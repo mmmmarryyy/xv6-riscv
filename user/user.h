@@ -22,6 +22,7 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+int syssleeplock(int type_of_request, int id_of_lock);
 
 // ulib.c
 int stat(const char*, struct stat*);
