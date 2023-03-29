@@ -191,3 +191,9 @@ void            virtio_disk_intr(void);
 // syssleeplock.c
 uint64          syssleeplock(int, int);
 void            syssleeplock_init(void);
+
+// dmesg.c
+void            dmesg_init(void);
+void            write_string(const char *);
+void            write_uint(uint);
+void            pr_msg (const char *);

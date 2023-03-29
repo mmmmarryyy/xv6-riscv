@@ -30,8 +30,10 @@ main()
     virtio_disk_init(); // emulated hard disk
     userinit();      // first user process
     syssleeplock_init(); // init syssleeplock 
+    dmesg_init();    // init dmesg
     __sync_synchronize();
     started = 1;
+    pr_msg("dmesg init!");
   } else {
     while(started == 0)
       ;
