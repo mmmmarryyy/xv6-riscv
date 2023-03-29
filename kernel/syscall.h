@@ -23,3 +23,5 @@
 
 //Self-written system calls
 #define SYS_syssleeplock 22
+#define SYS_pgaccess     23
+#define SYS_vmprint      24

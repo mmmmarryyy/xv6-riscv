@@ -101,3 +101,20 @@ sys_syssleeplock(void)
 
   return syssleeplock(type_of_request, id_of_lock); //handling inside
 }
+
+uint64
+sys_vmprint(void) 
+{
+  pagetable_t pagetable = myproc()->pagetable;
+  printf("pagetable %p\n", pagetable);
+  vmprint_pagetable(pagetable, 1);
+  return 0;
+}
+
+uint64 
+sys_pgaccess(void) 
+{
+  pagetable_t pagetable = myproc()->pagetable;
+  pgaccess(pagetable);
+  return 0;
+}
