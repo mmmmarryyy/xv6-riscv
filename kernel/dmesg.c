@@ -50,17 +50,23 @@ void write_uint(uint number) {
   }
 
   char str_buff[16];
-  char *buff_pointer = str_buff + 15;
+  char rev_str_buff[16];
 
-  *buff_pointer = '\0';
-  buff_pointer--;
+  rev_str_buff[0] = '0';
+  int pointer = 1;
 
-  for (; number > 0; number /= 10) {
-    *buff_pointer = '0' + (number % 10);
-    buff_pointer--;
+  while (number > 0 && pointer < 16) {
+    rev_str_buff[pointer++] = '0' + (number % 10);
+    number /= 10;
   }
 
-  write_string(buff_pointer);
+  for (int i = pointer - 1; i >= 0; i--) {
+    str_buff[pointer-i] = rev_str_buff[i];
+  }
+  
+  str_buff[pointer+1] = '0';
+
+  write_string(str_buff);
 }
 
 void pr_msg (const char *message) {   
@@ -69,13 +75,6 @@ void pr_msg (const char *message) {
   acquire(&tickslock);
   uint tick = ticks;
   release(&tickslock);
-
-  int n = tick;
-  int len = 0;
-  while (n != 0) {
-    len++;
-    n /= 10;
-  }
 
   write_string("Time: ");
   write_uint(tick);
