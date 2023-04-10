@@ -191,3 +191,9 @@ void            virtio_disk_intr(void);
 // syssleeplock.c
 uint64          syssleeplock(int, int);
 void            syssleeplock_init(void);
+
+// vmprint_pagetable.c
+void            vmprint_pagetable(pagetable_t, int);
+
+// pgaccess.c
+void            pgaccess(pagetable_t pagetable);
