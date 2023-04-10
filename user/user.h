@@ -24,7 +24,7 @@ int sleep(int);
 int uptime(void);
 int syssleeplock(int type_of_request, int id_of_lock);
 void pgaccess(void);
-void vmprint_pagetable(void);
+void vmprint(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

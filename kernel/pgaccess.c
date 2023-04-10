@@ -9,13 +9,13 @@ void pgaccess(pagetable_t pagetable) {
     
     if ((pte & PTE_V)) {
       if (pte & PTE_A) {
- 	    printf("%d: pte %p pa %p\n", i, pte, PTE2PA(pte));
-        pte ^= PTE_A;
+ 	      printf("%d: pte %p pa %p\n", i, pte, PTE2PA(pte));
+        pagetable[i] ^= PTE_A;
       }
 
- 	  if ((pte & (PTE_R | PTE_W | PTE_X)) == 0) {
- 		pgaccess((pagetable_t)PTE2PA(pte));
+ 	    if ((pte & (PTE_R | PTE_W | PTE_X)) == 0) {
+ 		    pgaccess((pagetable_t)PTE2PA(pte));
       } 
- 	}
+ 	  }
   }
 }
