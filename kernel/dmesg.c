@@ -15,10 +15,24 @@ static char dmesg_buffer[SIZE_OF_DMESG_BUFFER];
 static int begin_ptr = 0;
 static int end_ptr = 0;
 
+static int flags[3] = {1, 1, 1};
+
 static int words_counter = 0;
 
 void dmesg_init() {
     initlock(&lock, "dmesg spinlock");
+}
+
+int check_switch() {
+   return flags[0];
+}
+
+int check_inter() {
+   return flags[1];
+}
+
+int check_syscall() {
+   return flags[2];
 }
 
 int update_begin_ptr() {
@@ -163,6 +177,19 @@ uint64 sys_dmesg(void)
             consputc(dmesg_buffer[i]);
         }
     }
+
+    return 0;
+}
+
+uint64 sys_set_flags(void)
+{
+    acquire(&lock);
+
+    argint(0, &flags[0]);
+    argint(1, &flags[1]);
+    argint(2, &flags[2]);
+
+    release(&lock);
 
     return 0;
 }

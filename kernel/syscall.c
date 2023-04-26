@@ -6,6 +6,7 @@
 #include "proc.h"
 #include "syscall.h"
 #include "defs.h"
+#include "dmesg.h"
 
 // Fetch the uint64 at addr from the current process.
 int
@@ -103,6 +104,7 @@ extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
 extern uint64 sys_syssleeplock(void);
 extern uint64 sys_dmesg(void);
+extern uint64 sys_set_flags(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -130,6 +132,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_syssleeplock] sys_syssleeplock, 
 [SYS_dmesg] sys_dmesg,
+[SYS_set_flags] sys_set_flags,
 };
 
 void
@@ -143,6 +146,10 @@ syscall(void)
     // Use num to lookup the system call function for num, call it,
     // and store its return value in p->trapframe->a0
     p->trapframe->a0 = syscalls[num]();
+    
+    if (check_syscall() == 1) {
+      pr_msg("syscall: name=%s, pid=%d, sys_call_number=%d\n", p->name, p->pid, num);
+    }
   } else {
     printf("%d %s: unknown sys call %d\n",
             p->pid, p->name, num);
