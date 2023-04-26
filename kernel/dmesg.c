@@ -35,7 +35,7 @@ int update_end_ptr() {
     return prev;
 }
 
-static void write_char(char c) {
+static void my_write_char(char c) {
     dmesg_buffer[update_end_ptr()] = c;
 
     if (begin_ptr == end_ptr) {
@@ -53,17 +53,17 @@ static void write_char(char c) {
     }
 }
 
-static void write_ptr(uint64 ptr) {
-    write_char('0'); write_char('x');
+static void my_write_ptr(uint64 ptr) {
+    my_write_char('0'); my_write_char('x');
 
     for (int i = 0; i < (sizeof(uint64) * 2); i++) {
-        write_char(digits[(ptr >> (sizeof(uint64) * 8 - 4 * (i+1))) & 15]);
+        my_write_char(digits[(ptr >> (sizeof(uint64) * 8 - 4 * (i+1))) & 15]);
     }
 }
 
-void write_int(int number, int base) {
+void my_write_int(int number, int base) {
     if (number < 0) {
-        write_char('-');
+        my_write_char('-');
         number *= -1;
     }
 
@@ -77,14 +77,15 @@ void write_int(int number, int base) {
 
     pointer--;
 
-    while (pointer != 0) {
-        write_char(str_buff[pointer--]);
+    while (pointer > 0) {
+        my_write_char(str_buff[pointer--]);
     }
 }
 
-static void write_string(const char *message) { 
-    for (; *message; message++) {
-        write_char(*message);
+void my_write_string(const char* message) { 
+    int len = sizeof(message);
+    for (int i = 0; i < len; i++) {
+        my_write_char(message[i]);
     }
 }
 
@@ -95,9 +96,9 @@ void pr_msg(const char *fmt, ...) {
     uint tick = ticks;
     release(&tickslock);
 
-    write_string("Time: ");
-    write_uint(tick);
-    write_string(" ticks; ");
+    my_write_string("Time: ");
+    my_write_int(tick, 10);
+    my_write_string(" ticks; ");
 
     va_list message;
     va_start(message, fmt);
@@ -106,7 +107,7 @@ void pr_msg(const char *fmt, ...) {
 
     while (*fmt) {
         if (*fmt != '%') {
-            write_char(*fmt++);
+            my_write_char(*fmt++);
             continue;
         }
 
@@ -117,22 +118,22 @@ void pr_msg(const char *fmt, ...) {
         }
 
         if (current_char == '%') {
-            write_char('%');
+            my_write_char('%');
         } else if (current_char == 'p') {
-            write_ptr(va_arg(message, uint64));
+            my_write_ptr(va_arg(message, uint64));
         } else if (current_char == 'x') {
-            write_int(va_arg(message, int), 16);
+            my_write_int(va_arg(message, int), 16);
         } else if (current_char == 'd') {
-            write_int(va_arg(message, int), 10);
+            my_write_int(va_arg(message, int), 10);
         } else if (current_char == 's') {
             if (!(current_string = va_arg(message, const char*))) {
                 current_string = "(null)";
             }
 
-            write_string(current_string);
+            my_write_string(current_string);
         } else {
-            write_char('%');
-            write_char(current_char);
+            my_write_char('%');
+            my_write_char(current_char);
         }
 
         fmt++;
@@ -140,7 +141,7 @@ void pr_msg(const char *fmt, ...) {
 
     va_end(message);
 
-    write_char('\0');
+    my_write_char('\0');
     words_counter++;
 
     release(&lock);
