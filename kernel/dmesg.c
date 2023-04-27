@@ -81,6 +81,11 @@ void my_write_int(int number, int base) {
         number *= -1;
     }
 
+    if (number == 0) {
+        my_write_char('0');
+        return;
+    }
+
     char str_buff[16];
     int pointer = 0;
 
@@ -106,9 +111,9 @@ void my_write_string(const char* message) {
 void pr_msg(const char *fmt, ...) {
     acquire(&lock);
 
-    acquire(&tickslock);
+    //acquire(&tickslock);
     uint tick = ticks;
-    release(&tickslock);
+    //release(&tickslock);
 
     my_write_string("Time: ");
     my_write_int(tick, 10);
