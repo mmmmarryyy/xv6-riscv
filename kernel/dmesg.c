@@ -67,6 +67,11 @@ void my_write_int(int number, int base) {
         number *= -1;
     }
 
+    if (number == 0) {
+        my_write_char('0');
+        return;
+    }
+
     char str_buff[16];
     int pointer = 0;
 
@@ -77,7 +82,7 @@ void my_write_int(int number, int base) {
 
     pointer--;
 
-    while (pointer > 0) {
+    while (pointer >= 0) {
         my_write_char(str_buff[pointer--]);
     }
 }

@@ -35,7 +35,7 @@ main()
     dmesg_init();
     started = 1;
     pr_msg("%s", "dmesg init!");
-    pr_msg("test {%d, %x} and test {%c}", 276, 2648, 'g');
+    pr_msg("test {%d, %x} and test {%s}", 276, 2648, "g");
   } else {
     while(started == 0)
       ;
