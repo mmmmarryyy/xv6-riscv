@@ -37,3 +37,5 @@ entry("sbrk");
 entry("sleep");
 entry("uptime");
 entry("syssleeplock"); 
+entry("dmesg");
+entry("set_flags");

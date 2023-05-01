@@ -23,3 +23,5 @@
 
 //Self-written system calls
 #define SYS_syssleeplock 22
+#define SYS_dmesg 26
+#define SYS_set_flags 27

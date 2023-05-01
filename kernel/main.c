@@ -3,6 +3,7 @@
 #include "memlayout.h"
 #include "riscv.h"
 #include "defs.h"
+#include "dmesg.h"
 
 volatile static int started = 0;
 
@@ -31,7 +32,10 @@ main()
     userinit();      // first user process
     syssleeplock_init(); // init syssleeplock 
     __sync_synchronize();
+    dmesg_init();
     started = 1;
+    pr_msg("%s", "dmesg init!");
+    pr_msg("test {%d, %x} and test {%s}", 276, 2648, "g");
   } else {
     while(started == 0)
       ;

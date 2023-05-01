@@ -23,6 +23,8 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int syssleeplock(int type_of_request, int id_of_lock);
+int dmesg(void);
+void set_flags(int, int, int);
 
 // ulib.c
 int stat(const char*, struct stat*);
