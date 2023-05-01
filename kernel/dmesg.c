@@ -96,7 +96,7 @@ void my_write_int(int number, int base) {
 
     pointer--;
 
-    while (pointer > 0) {
+    while (pointer >= 0) {
         my_write_char(str_buff[pointer--]);
     }
 }
