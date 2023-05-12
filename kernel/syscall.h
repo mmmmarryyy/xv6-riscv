@@ -23,3 +23,5 @@
 
 //Self-written system calls
 #define SYS_syssleeplock 22
+#define SYS_symlink 28
+#define SYS_readlink 29

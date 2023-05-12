@@ -2,6 +2,8 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 #include "kernel/fs.h"
+#include "kernel/param.h"
+#include "kernel/fcntl.h"
 
 char*
 fmtname(char *path)
@@ -26,11 +28,12 @@ void
 ls(char *path)
 {
   char buf[512], *p;
+  char link[MAXPATH];
   int fd;
   struct dirent de;
   struct stat st;
 
-  if((fd = open(path, 0)) < 0){
+  if((fd = open(path, O_NOFOLLOW)) < 0){
     fprintf(2, "ls: cannot open %s\n", path);
     return;
   }
@@ -45,6 +48,14 @@ ls(char *path)
   case T_DEVICE:
   case T_FILE:
     printf("%s %d %d %l\n", fmtname(path), st.type, st.ino, st.size);
+    break;
+
+  case T_SYMLINK:
+    if (readlink(path, link) == 0) {
+      printf("%s %d %d %l: %s\n", fmtname(path), st.type, st.ino, st.size, link);
+    } else {
+      printf("ls: failed to read symlink from %s\n", path);
+    }
     break;
 
   case T_DIR:
@@ -64,7 +75,12 @@ ls(char *path)
         printf("ls: cannot stat %s\n", buf);
         continue;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, st.size);
+
+      if (st.type == T_SYMLINK && readlink(buf, link) == 0) {
+        printf("%s %d %d %d : %s\n", fmtname(buf), st.type, st.ino, st.size, link);
+      } else {
+        printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, st.size);
+      }
     }
     break;
   }

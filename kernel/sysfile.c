@@ -307,7 +307,7 @@ sys_open(void)
   char path[MAXPATH];
   int fd, omode;
   struct file *f;
-  struct inode *ip;
+  struct inode *ip, *new_ip;
   int n;
 
   argint(1, &omode);
@@ -328,10 +328,36 @@ sys_open(void)
       return -1;
     }
     ilock(ip);
-    if(ip->type == T_DIR && omode != O_RDONLY){
+    if(ip->type == T_DIR && omode != O_RDONLY && omode != O_NOFOLLOW){
       iunlockput(ip);
       end_op();
       return -1;
+    }
+
+    int while_limit = 0;
+    while (ip->type == T_SYMLINK && omode != O_NOFOLLOW) {
+      if (while_limit > 8) {
+        iunlockput(ip);
+        end_op();
+        return -1;
+      }
+
+      if (MAXPATH > readi(ip, 0, (uint64)path, 0, MAXPATH)) {
+        iunlockput(ip);
+        end_op();
+        return -1;
+      }
+
+      iunlockput(ip);
+
+      if ((new_ip = namei(path)) == 0) {
+        end_op();
+        return -1;
+      }
+
+      ip = new_ip;
+      ilock(ip);
+      while_limit++;
     }
   }
 
