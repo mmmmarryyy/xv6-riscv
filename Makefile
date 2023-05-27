@@ -137,6 +137,7 @@ UPROGS=\
 	$U/_homework_2\
 	$U/_homework_1_1\
 	$U/_homework_1_2\
+	$U/_null_file_creator\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
